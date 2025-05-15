@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  nuclei:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      # Mount user data directory
+      - ./data:/app/data
+      # Optional: Mount experimental data if needed
+      # - ./experimental_data:/app/experimental_data
+    environment:
+      - DISPLAY=${DISPLAY}
+    # For X11 forwarding on Linux (uncomment if running GUI is needed)
+    # volumes:
+    #   - /tmp/.X11-unix:/tmp/.X11-unix
+    # network_mode: host

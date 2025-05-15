@@ -1,9 +1,5 @@
 # nuclei.io: Human-in-the-loop active learning framework for pathology image analysis
 
-
-
-## Introduction
-
 <div style="display: flex; align-items: flex-start; justify-content: space-between;">
 
 <div style="flex: 0 58%; margin-right: 10px;">
@@ -39,7 +35,57 @@ The codebase is built with Python, so you can plug in your AI/ML model in any wa
 </div>
 
 
+## Docker Setup (New!)
 
+### Prerequisites
+- Docker installed on your system
+- Docker Compose (optional but recommended)
+
+### Building and Running with Docker
+
+1. Build the Docker image:
+   ```bash
+   docker build -t nuclei .
+   ```
+
+2. Run the container:
+   ```bash
+   docker run -it nuclei
+   ```
+
+### Using Docker Compose
+
+1. Start the application:
+   ```bash
+   docker-compose up
+   ```
+
+2. Stop the application:
+   ```bash
+   docker-compose down
+   ```
+
+### Running with GUI (X11 forwarding)
+
+For Linux:
+1. Allow X server connections:
+   ```bash
+   xhost +local:docker
+   ```
+
+2. Uncomment the X11 forwarding lines in docker-compose.yml and run:
+   ```bash
+   docker-compose up
+   ```
+
+For Mac:
+1. Install XQuartz
+2. Allow connections from network clients in XQuartz preferences
+3. Run:
+   ```bash
+   xhost +localhost
+   docker run -e DISPLAY=host.docker.internal:0 nuclei
+   ```
 
 ## Youtube tutorial
 Watch our 8-minute comprehensive tutorial on how to install and use nuclei.io by clicking the link below!
