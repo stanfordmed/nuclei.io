@@ -1,0 +1,18 @@
+setuptools
+numpy==1.23.5
+matplotlib>=3.7.0,<3.8.0
+pandas>=2.0.0,<2.1.0
+opencv-python>=4.8.0,<4.9.0
+scipy>=1.10.0,<1.11.0
+tiffslide==1.5.0
+multiprocess==0.70.17
+xgboost>=1.7.4,<1.8.0
+scikit-learn>=1.3.0,<1.4.0
+tqdm==4.64.1
+natsort==8.2.0
+
+# Tensorflow without platform-specific requirements
+tensorflow==2.12.0
+stardist==0.9.1
+fastdist==1.1.6
+transformers

@@ -35,57 +35,70 @@ The codebase is built with Python, so you can plug in your AI/ML model in any wa
 </div>
 
 
-## Docker Setup (New!)
+## Docker Setup (Updated)
 
 ### Prerequisites
 - Docker installed on your system
-- Docker Compose (optional but recommended)
+- For GUI: X11 server (built-in on Linux, XQuartz on macOS)
 
-### Building and Running with Docker
+### Quick Start with GUI Support
 
-1. Build the Docker image:
+#### On Linux:
+1. Allow X server connections and run:
    ```bash
-   docker build -t nuclei .
-   ```
-
-2. Run the container:
-   ```bash
-   docker run -it nuclei
-   ```
-
-### Using Docker Compose
-
-1. Start the application:
-   ```bash
-   docker-compose up
-   ```
-
-2. Stop the application:
-   ```bash
-   docker-compose down
-   ```
-
-### Running with GUI (X11 forwarding)
-
-For Linux:
-1. Allow X server connections:
-   ```bash
+   mkdir -p data
    xhost +local:docker
+   docker-compose -f docker-compose-gui.yml up
    ```
 
-2. Uncomment the X11 forwarding lines in docker-compose.yml and run:
+#### On macOS:
+1. Install XQuartz and enable network connections:
    ```bash
-   docker-compose up
+   brew install --cask xquartz
    ```
-
-For Mac:
-1. Install XQuartz
-2. Allow connections from network clients in XQuartz preferences
-3. Run:
+2. Open XQuartz, go to Preferences → Security, and check "Allow connections from network clients"
+3. Restart XQuartz, then run:
    ```bash
+   mkdir -p data
    xhost +localhost
-   docker run -e DISPLAY=host.docker.internal:0 nuclei
+   docker-compose -f docker-compose-gui.yml up nuclei-gui-mac
    ```
+
+#### Direct Docker command (alternative):
+```bash
+# Build the GUI-enabled image
+docker build -t nuclei-gui -f Dockerfile.gui .
+
+# Linux
+docker run --rm -it -v $(pwd)/data:/app/data -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY --network=host nuclei-gui
+
+# macOS
+docker run --rm -it -v $(pwd)/data:/app/data -e DISPLAY=host.docker.internal:0 nuclei-gui
+```
+
+### Running in Headless Mode
+If you don't need the GUI or have trouble with X11 forwarding:
+```bash
+docker build -t nuclei-minimal -f Dockerfile.minimal .
+docker run --rm -v $(pwd)/data:/app/data nuclei-minimal xvfb-run --auto-servernum python -m software.main
+```
+
+### Troubleshooting Docker GUI Issues
+1. Verify X11 is working:
+   ```bash
+   # Linux
+   xhost +local:docker
+   docker run --rm -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY nuclei-gui xeyes
+   
+   # macOS
+   xhost +localhost
+   docker run --rm -it -e DISPLAY=host.docker.internal:0 nuclei-gui xeyes
+   ```
+2. Check logs for error messages:
+   ```bash
+   docker logs $(docker ps -q --filter ancestor=nuclei-gui)
+   ```
+3. On macOS, sometimes restarting XQuartz is necessary after changing preferences
 
 ## Youtube tutorial
 Watch our 8-minute comprehensive tutorial on how to install and use nuclei.io by clicking the link below!

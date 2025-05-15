@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  nuclei-gui:
+    build:
+      context: .
+      dockerfile: Dockerfile.gui
+    # Linux configuration
+    volumes:
+      - ./data:/app/data
+      - /tmp/.X11-unix:/tmp/.X11-unix  # Mount X11 socket
+    environment:
+      - DISPLAY=${DISPLAY}
+    network_mode: host  # Needed for X11 forwarding on Linux
+    # For security, you might want to consider adding:
+    # security_opt:
+    #   - seccomp:unconfined
+
+  # Alternative Mac configuration (uncomment to use)
+  # nuclei-gui-mac:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.gui
+  #   volumes:
+  #     - ./data:/app/data
+  #   environment:
+  #     - DISPLAY=host.docker.internal:0  # Mac-specific display setting
+  #   # Mac doesn't need network_mode: host for X11

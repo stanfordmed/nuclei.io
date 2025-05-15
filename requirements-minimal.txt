@@ -1,0 +1,9 @@
+setuptools
+numpy==1.23.5
+matplotlib==3.7.2
+pandas==2.0.3
+opencv-python==4.8.1.78
+scipy==1.10.1
+tqdm==4.64.1
+natsort==8.2.0
+PySide6==6.5.3
