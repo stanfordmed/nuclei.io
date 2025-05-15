@@ -7,8 +7,6 @@
 
   <p>For the full information, please visit our homepage: https://huangzhii.github.io/nuclei-HAI/</p>
 
-
-
 <div style="flex: 0 48%; margin-bottom: 10px;">
   <img src="assets/images/10s_demo.gif" style="width: 100%;"/>
 </div>
@@ -21,7 +19,7 @@
 
 The codebase is built with Python, so you can plug in your AI/ML model in any way you want!
 
-⚠️ Note: We are working hard to resolve the OS compatibility issue for a better user experience. Feel free to submit pull requests and improve it!
+⚠️ Note: This application is optimized for Linux. Other operating systems are not officially supported.
 
 
   <p>If you are a pathologist/user/developer who plan to use this software for annotating / analyzing whole slide pathology images, please follow the tutorial below.
@@ -30,38 +28,30 @@ The codebase is built with Python, so you can plug in your AI/ML model in any wa
 
 <div style="flex: 0 38%;">
   <img src="assets/images/nuclei_demo.png" style="width: 50%;"/>
-  <p>Install nuclei.io and run on your Macbook now!</p>
+  <p>Install nuclei.io and run on Linux now!</p>
 </div>
 </div>
 
 
-## Docker Setup (Updated)
+## Docker Setup for Linux
 
 ### Prerequisites
-- Docker installed on your system
-- For GUI: X11 server (built-in on Linux, XQuartz on macOS)
+- Linux operating system
+- Docker installed
+- X11 server (built-in on Linux)
 
 ### Quick Start with GUI Support
 
-#### On Linux:
 1. Allow X server connections and run:
    ```bash
    mkdir -p data
    xhost +local:docker
-   docker-compose -f docker-compose-gui.yml up
+   docker compose -f docker-compose-gui.yml up
    ```
 
-#### On macOS:
-1. Install XQuartz and enable network connections:
+   Note: If you're using older Docker versions that have docker-compose as a separate command, use:
    ```bash
-   brew install --cask xquartz
-   ```
-2. Open XQuartz, go to Preferences → Security, and check "Allow connections from network clients"
-3. Restart XQuartz, then run:
-   ```bash
-   mkdir -p data
-   xhost +localhost
-   docker-compose -f docker-compose-gui.yml up nuclei-gui-mac
+   docker-compose -f docker-compose-gui.yml up
    ```
 
 #### Direct Docker command (alternative):
@@ -69,36 +59,39 @@ The codebase is built with Python, so you can plug in your AI/ML model in any wa
 # Build the GUI-enabled image
 docker build -t nuclei-gui -f Dockerfile.gui .
 
-# Linux
+# Run with X11 forwarding
 docker run --rm -it -v $(pwd)/data:/app/data -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY --network=host nuclei-gui
-
-# macOS
-docker run --rm -it -v $(pwd)/data:/app/data -e DISPLAY=host.docker.internal:0 nuclei-gui
 ```
 
 ### Running in Headless Mode
-If you don't need the GUI or have trouble with X11 forwarding:
+If you don't need the GUI or want to run in a server environment:
 ```bash
 docker build -t nuclei-minimal -f Dockerfile.minimal .
 docker run --rm -v $(pwd)/data:/app/data nuclei-minimal xvfb-run --auto-servernum python -m software.main
 ```
 
 ### Troubleshooting Docker GUI Issues
-1. Verify X11 is working:
+
+1. Verify X11 permissions:
    ```bash
-   # Linux
+   # Make sure X server allows connections
    xhost +local:docker
-   docker run --rm -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY nuclei-gui xeyes
-   
-   # macOS
-   xhost +localhost
-   docker run --rm -it -e DISPLAY=host.docker.internal:0 nuclei-gui xeyes
    ```
-2. Check logs for error messages:
+
+2. Test X11 forwarding with a simple container:
+   ```bash
+   docker run --rm -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY x11-apps xeyes
+   ```
+
+3. Check logs for error messages:
    ```bash
    docker logs $(docker ps -q --filter ancestor=nuclei-gui)
    ```
-3. On macOS, sometimes restarting XQuartz is necessary after changing preferences
+
+4. If you still have issues, run with verbose output:
+   ```bash
+   docker run --rm -it -v $(pwd)/data:/app/data -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY --network=host nuclei-gui python3 -m software.main --verbose
+   ```
 
 ## Youtube tutorial
 Watch our 8-minute comprehensive tutorial on how to install and use nuclei.io by clicking the link below!

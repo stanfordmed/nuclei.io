@@ -46,7 +46,11 @@ else:
 
 # For mac OS, we must put the two lines "multiprocess.freeze_support()" and "multiprocessing.freeze_support()" before import mainwindow.
 # Otherwise, the program will result in infinite loop running in backend, which is not noticable.
-from mainwindow import MainWindow
+try:
+    from mainwindow import MainWindow
+except ImportError:
+    # Try with explicit import path for Docker environment
+    from software.mainwindow import MainWindow
 
 
 if __name__ == '__main__':

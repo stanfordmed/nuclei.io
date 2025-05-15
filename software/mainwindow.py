@@ -126,6 +126,11 @@ class MainWindow(QMainWindow):
 
         self.backend = webengine_setup(self)
         
+        # Handle the case when the backend couldn't be initialized (QtWebEngine not available)
+        if self.backend is None:
+            print("Warning: WebEngine backend could not be initialized", file=sys.stderr)
+            QMessageBox.warning(self, "Limited Functionality", 
+                               "QtWebEngine components could not be loaded. The application will run with limited functionality.")
 
         #############################################
         # Menu action setup
